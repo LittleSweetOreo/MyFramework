@@ -6,8 +6,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.nstv.myframework.animator.AnimatorHomeActivity;
+import com.nstv.myframework.customview.PieChartActivity;
 import com.nstv.myframework.mtldesign.ScrollingActivity;
 import com.nstv.myframework.mtldesign.PageColorGradualActivity;
+import com.nstv.myframework.test.event.TouchEventActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,8 @@ public class MainActivity extends BaseActivity {
 		mList.add("折叠标题栏效果1");
 		mList.add("折叠标题栏效果2");
 		mList.add("ViewPager滑动背景色渐变");
+		mList.add("事件分发");
+		mList.add("饼状图");
 		mAdapter = new MainAdapter(this, mList);
 		mListView.setAdapter(mAdapter);
 
@@ -65,6 +69,12 @@ public class MainActivity extends BaseActivity {
 						break;
 					case 3:
 						openActivity(PageColorGradualActivity.class);
+						break;
+					case 4:
+						openActivity(TouchEventActivity.class);
+						break;
+					case 5:
+						openActivity(PieChartActivity.class);
 						break;
 					default:
 						break;

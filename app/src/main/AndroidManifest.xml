@@ -27,8 +27,11 @@
             android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme">
         </activity>
-        <activity
-            android:name=".mtldesign.PageColorGradualActivity">
+        <activity android:name=".mtldesign.PageColorGradualActivity">
+        </activity>
+        <activity android:name=".test.event.TouchEventActivity">
+        </activity>
+        <activity android:name=".customview.PieChartActivity">
         </activity>
     </application>
 
