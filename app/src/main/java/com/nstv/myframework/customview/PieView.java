@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author liyong
  * @date 2017/11/15 10:12
- * @desc 饼状图
+ * @desc 饼状图（提交测试）
  */
 
 public class PieView extends View {
