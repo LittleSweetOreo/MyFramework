@@ -46,7 +46,8 @@ public class PieView extends View {
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PieView);
 		mStartAngle = typedArray.getFloat(R.styleable.PieView_startAngle, 0f);
 		mPaint.setAntiAlias(true);
-		mPaint.setStyle(Paint.Style.FILL);
+		mPaint.setStrokeWidth(160);
+		mPaint.setStyle(Paint.Style.STROKE);
 	}
 
 	public PieView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -88,14 +89,14 @@ public class PieView extends View {
 		canvas.translate(xCoorOrigin, yCoorOrigin);
 
 		//圆弧对应的圆的半径
-		float r = Math.min(mActualWidth, mActualHeight) / 2;
+		float r = Math.min(mActualWidth, mActualHeight) / 2 * 0.6f;
 
 		//圆弧所在椭圆的外切矩形(饼状图对应的外切矩形是正方形)
 		RectF rectF = new RectF(-r, -r, r, r);
 
 		for (int i = 0; i < mPieData.size(); i++) {
 			mPaint.setColor(mPieData.get(i).getColor());
-			canvas.drawArc(rectF, mStartAngle, mPieData.get(i).getAngle(), true, mPaint);
+			canvas.drawArc(rectF, mStartAngle, mPieData.get(i).getAngle(), false, mPaint);
 
 			//下一个圆弧的起始角度
 			mStartAngle += mPieData.get(i).getAngle();
