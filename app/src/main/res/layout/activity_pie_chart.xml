@@ -12,6 +12,6 @@
         android:layout_width="240dp"
         android:layout_height="240dp"
         android:layout_centerInParent="true"
-        app:startAngle="0"/>
+        app:startAngle="-90"/>
 
 </RelativeLayout>

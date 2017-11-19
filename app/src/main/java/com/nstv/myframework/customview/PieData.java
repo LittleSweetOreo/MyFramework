@@ -9,19 +9,21 @@ package com.nstv.myframework.customview;
 public class PieData {
 	//用户关心的数据
 	private String name; //数据项名称
-	private float value; //数据项数值
+	private double value; //数据项数值
 
 	//饼状图绘制关心的数据
-	private float angle; //绘制的角度
+	private double angle; //绘制的角度
 	private int color;   //绘制的颜色
-	private float percentage; //占数据项总和百分比
+	private double percentage; //占数据项总和百分比
+	private double startAngle; //该段圆弧起始角度
 
-	public PieData(String name, float value) {
+	public PieData(String name, double value) {
 		this.name = name;
 		this.value = value;
 	}
 
 	public String getName() {
+
 		return name;
 	}
 
@@ -29,19 +31,19 @@ public class PieData {
 		this.name = name;
 	}
 
-	public float getValue() {
+	public double getValue() {
 		return value;
 	}
 
-	public void setValue(float value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 
-	public float getAngle() {
+	public double getAngle() {
 		return angle;
 	}
 
-	public void setAngle(float angle) {
+	public void setAngle(double angle) {
 		this.angle = angle;
 	}
 
@@ -53,11 +55,19 @@ public class PieData {
 		this.color = color;
 	}
 
-	public float getPercentage() {
+	public double getPercentage() {
 		return percentage;
 	}
 
-	public void setPercentage(float percentage) {
+	public void setPercentage(double percentage) {
 		this.percentage = percentage;
+	}
+
+	public double getStartAngle() {
+		return startAngle;
+	}
+
+	public void setStartAngle(double startAngle) {
+		this.startAngle = startAngle;
 	}
 }
