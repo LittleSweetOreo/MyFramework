@@ -136,9 +136,6 @@ public class PieView extends View {
 		for (int i = 0; i < mPieData.size(); i++) {
 			mArcPaint.setColor(mPieData.get(i).getColor());
 
-			//设置该段圆弧起始角度
-			mPieData.get(i).setStartAngle(mCurrentStartAngle - 0.5);
-
 			//画圆弧
 			canvas.drawArc(rectArc, mCurrentStartAngle - 0.5f, (float) mPieData.get(i).getAngle() + 0.5f, false, mArcPaint);
 

@@ -28,7 +28,7 @@ public class PieChartActivity extends BaseActivity {
     protected void initData() {
         final List<PieData> pieDatas = new ArrayList<>();
         pieDatas.add(new PieData("学习", 6600));
-        pieDatas.add(new PieData("餐饮", 20200));
+        pieDatas.add(new PieData("餐饮", 18200));
         pieDatas.add(new PieData("服装", 5800));
         pieDatas.add(new PieData("数码", 13600));
 
