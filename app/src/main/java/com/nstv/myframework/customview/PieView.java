@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 
 import com.nstv.myframework.R;
 import com.nstv.myframework.util.Logger;
@@ -29,12 +31,17 @@ public class PieView extends View {
 	private int mActualHeight; //实际的高度
 
 	private double mR;         //圆弧对应的圆的半径
-	private double mArcWidth = 160;  //圆弧的宽度
+	private float mArcWidth = 180;  //圆弧的宽度
+
 	private Paint mArcPaint = new Paint();       //圆弧画笔
 	private Paint mTextPaint = new Paint();       //文字画笔
 
+	private RectF mRectArc;    //饼状图外切矩形
+	private RectF mGrowRectArc; //圆弧点击后对应的外切矩形
+
 	private float mStartAngle;   //绘制圆弧的开始角度,在一个单调区间内方便计算
 
+	private PieChartAnimation mAnimation; //饼状图加载动画
 	private OnPieClickListener mOnPieClickListener;
 
 	//预定义饼状图颜色
@@ -52,16 +59,8 @@ public class PieView extends View {
 		this(context, attrs, 0);
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PieView);
 		mStartAngle = typedArray.getFloat(R.styleable.PieView_startAngle, 0f);
-		Logger.w(TAG, "init StartAngle = " + mStartAngle);
 
-		//规定开始角度必须在[-90°,90°]内,否则抛出异常
-		if (mStartAngle < -90 || mStartAngle > 90) {
-			throw new PieStartAngleIllegalException();
-		}
-
-		initArcPaint();
-		initTextPaint();
-
+		init();
 		typedArray.recycle();
 	}
 
@@ -69,12 +68,25 @@ public class PieView extends View {
 		super(context, attrs, defStyleAttr);
 	}
 
+	private void init() {
+		//规定开始角度必须在[-90°,90°]内,否则抛出异常
+		if (mStartAngle < -90 || mStartAngle > 90) {
+			throw new PieStartAngleIllegalException();
+		}
+
+		initArcPaint();
+		initTextPaint();
+		initAnimation();
+	}
+
 	/**
 	 * 初始化圆弧画笔
 	 */
 	private void initArcPaint() {
 		mArcPaint.setAntiAlias(true);
-		mArcPaint.setStrokeWidth((float) mArcWidth);
+		mArcPaint.setStrokeWidth(mArcWidth);
+		//防止抖动
+		mArcPaint.setDither(true);
 		mArcPaint.setStyle(Paint.Style.STROKE);
 	}
 
@@ -87,6 +99,14 @@ public class PieView extends View {
 		mTextPaint.setColor(Color.WHITE);
 		mTextPaint.setTextSize(30f);
 
+	}
+
+	/**
+	 * 初始化补间动画
+	 */
+	private void initAnimation() {
+		mAnimation = new PieChartAnimation();
+		mAnimation.setDuration(1000);
 	}
 
 	@Override
@@ -108,60 +128,81 @@ public class PieView extends View {
 		//记录view实际的宽高
 		mActualWidth = w;
 		mActualHeight = h;
+
+		//圆弧对应的圆的半径
+		float k = 0.6f;
+		mR = Math.min(mActualWidth, mActualHeight) / 2 * k;
+
+		//圆弧所在椭圆的外切矩形(饼状图对应的外切矩形是正方形)
+		mRectArc = new RectF((float) -mR, (float) -mR, (float) mR, (float) mR);
+
+		//圆弧点击扩大后对应的外切矩形
+		mGrowRectArc = new RectF((float) -mR * 1.1f, (float) -mR * 1.1f, (float) mR * 1.1f, (float) mR * 1.1f);
+		//整个扇形不能超出View的范围
+		//经计算当 0<k<= 0.5时,0<mArcWidth<=k*mActualWidth
+		//当0.5<k<1时,0<mArcWidth<=(1-k)*mActualWidth
+		if (k > 0 && k <= 0.5) {
+			mArcWidth = k * 0.4f * mActualWidth;
+		} else {
+			mArcWidth = (1 - k) * 0.6f * mActualWidth;
+		}
+
 	}
 
+
+	private Canvas mCanvas;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		mCanvas = canvas;
 		if (mPieData == null || mPieData.isEmpty()) {
 			return;
 		}
 
-		float mCurrentStartAngle = mStartAngle;
-
-		float xCoorOrigin = mActualWidth / 2;
-		float yCoorOrigin = mActualHeight / 2;
-
 		//将画布的坐标系原点平移到view的中心点
-		canvas.translate(xCoorOrigin, yCoorOrigin);
+		canvas.translate(mActualWidth / 2, mActualHeight / 2);
 
-		//圆弧对应的圆的半径
-		double r = Math.min(mActualWidth, mActualHeight) / 2 * 0.6;
-		mR = r;
-		//圆弧所在椭圆的外切矩形(饼状图对应的外切矩形是正方形)
-		RectF rectArc = new RectF((float) -r, (float) -r, (float) r, (float) r);
+		mArcPaint.setStrokeWidth(mArcWidth);
+
 		//文本外切矩形
 		Rect rectText = new Rect();
+		float currentStartAngle = mStartAngle;
 		for (int i = 0; i < mPieData.size(); i++) {
-			mArcPaint.setColor(mPieData.get(i).getColor());
+			PieData pieData = mPieData.get(i);
+			mArcPaint.setColor(pieData.getColor());
+			if (mIsNeedGrow && i == mGrowPosition) {
+				mArcPaint.setStrokeWidth(mArcWidth + 6);
+				canvas.drawArc(mGrowRectArc, currentStartAngle - 0.5f, (float) pieData.getAngle() + 0.5f, false, mArcPaint);
+			} else {
+				mArcPaint.setStrokeWidth(mArcWidth);
+				//画圆弧
+				canvas.drawArc(mRectArc, currentStartAngle - 0.5f, (float) pieData.getAngle() + 0.5f, false, mArcPaint);
+			}
 
-			//画圆弧
-			canvas.drawArc(rectArc, mCurrentStartAngle - 0.5f, (float) mPieData.get(i).getAngle() + 0.5f, false, mArcPaint);
-
-
-			String text = mPieData.get(i).getName();
+			String text = pieData.getName();
 			mTextPaint.getTextBounds(text, 0, text.length(), rectText);
 
 			int widthText = rectText.width();
 			int heightText = rectText.height();
 
 			//圆弧中心坐标
-			double[] centerPosition = calculatePosition(r, mPieData.get(i).getAngle(), mCurrentStartAngle);
+			double[] centerPosition = calculatePosition(mR, pieData.getAngle(), pieData.getCurrentStartAngle());
 
 			//画圆弧上的文本内容
 			canvas.drawText(text, 0, text.length(),
 					(float) (centerPosition[0] - widthText / 2),
 					(float) (centerPosition[1] + heightText / 2), mTextPaint);
 
-			//下一个圆弧的起始角度
-			mCurrentStartAngle += mPieData.get(i).getAngle();
+			currentStartAngle = (float) (currentStartAngle + pieData.getAngle());
 		}
 	}
 
 
 	private float mActionDownX;
 	private float mActionDownY;
+	private boolean mIsNeedGrow;
+	private int mGrowPosition = INVALID_POSITION;
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -175,7 +216,15 @@ public class PieView extends View {
 				//把按下和抬起的时候的触摸点距离<5认为是单击事件
 				if (Math.abs(event.getX() - mActionDownX) < 5 && Math.abs(event.getY() - mActionDownY) < 5) {
 					if (isTouchArc(event.getX(), event.getY()) && mOnPieClickListener != null) {
-						mOnPieClickListener.onArcClick(getPositionOnArc(event.getX() - mActualWidth / 2, event.getY() - mActualWidth / 2));
+						int positon = getPositionOnArc(event.getX() - mActualWidth / 2, event.getY() - mActualWidth / 2);
+						if (positon == -1) {
+							break;
+						} else {
+							mOnPieClickListener.onArcClick(positon);
+							mIsNeedGrow = true;
+							mGrowPosition = positon;
+							invalidate();
+						}
 					}
 
 				}
@@ -238,6 +287,16 @@ public class PieView extends View {
 		}
 
 		return INVALID_POSITION;
+	}
+
+	private void touchArcGrow(int position) {
+		try {
+			PieData pieData = mPieData.get(position);
+			mArcPaint.setColor(pieData.getColor());
+			mCanvas.drawArc(mGrowRectArc, (float) (pieData.getCurrentStartAngle()), (float) (pieData.getAngle()), true, mArcPaint);
+		} catch (Exception e) {
+			Logger.e(TAG, "exception " + e.toString());
+		}
 	}
 
 	/**
@@ -349,14 +408,22 @@ public class PieView extends View {
 		return radian * 180 / Math.PI;
 	}
 
+	/**
+	 * 填充数据
+	 *
+	 * @param pieData
+	 */
 	public void setData(List<? extends PieData> pieData) {
+		if (pieData == null || pieData.isEmpty())
+			return;
 		mPieData = pieData;
-		initData();
+		setPieData();
+		startAnimation(mAnimation);
 		//刷新
 		invalidate();
 	}
 
-	public void initData() {
+	public void setPieData() {
 		if (mPieData == null || mPieData.isEmpty()) {
 			return;
 		}
@@ -370,17 +437,26 @@ public class PieView extends View {
 			mPieData.get(i).setColor(mPieColors[i % mPieColors.length]);
 		}
 
+		float currentStartAngle = mStartAngle;
 		for (int i = 0; i < mPieData.size(); i++) {
 			double percentage = mPieData.get(i).getValue() / sumValue;
 			double angle = percentage * 360;
-			//数据项百分比赋值
-			mPieData.get(i).setPercentage(percentage);
+			//当前圆弧开始角度
+			mPieData.get(i).setCurrentStartAngle(currentStartAngle);
 			//数据项角度赋值
 			mPieData.get(i).setAngle(angle);
+			//数据项百分比赋值
+			mPieData.get(i).setPercentage(percentage);
+			currentStartAngle += angle;
 		}
 
 	}
 
+	/**
+	 * 设置饼状图绘制的开始角度
+	 *
+	 * @param StartAngle ∈[-90,90]
+	 */
 	public void setStartAngle(float StartAngle) {
 		this.mStartAngle = StartAngle;
 
@@ -393,13 +469,36 @@ public class PieView extends View {
 	}
 
 	/**
-	 * 圆弧点击事件
+	 * 圆弧点击监听接口
 	 */
 	public interface OnPieClickListener {
-		public void onArcClick(int position);
+		void onArcClick(int position);
 	}
 
 	public void setOnPieClickListener(OnPieClickListener mOnPieClickListener) {
 		this.mOnPieClickListener = mOnPieClickListener;
 	}
+
+	/**
+	 * @author liyong
+	 * @date 2017/11/23 11:53
+	 * @desc 饼状图补间动画
+	 */
+	class PieChartAnimation extends Animation {
+		@Override
+		protected void applyTransformation(float interpolatedTime, Transformation t) {
+			super.applyTransformation(interpolatedTime, t);
+			if (interpolatedTime <= 1.0f) {
+
+				for (int i = 0; i < mPieData.size(); i++) {
+					PieData pieData = mPieData.get(i);
+					double angle = mPieData.get(i).getPercentage() * 360;
+					pieData.setAngle(angle * interpolatedTime);
+				}
+
+			}
+			invalidate();
+		}
+	}
+
 }

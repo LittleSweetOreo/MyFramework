@@ -12,6 +12,7 @@ public class PieData {
     private double value; //数据项数值
 
     //饼状图绘制关心的数据
+    private double currentStartAngle; //当前圆弧开始角度
     private double angle; //绘制的角度
     private int color;   //绘制的颜色
     private double percentage; //占数据项总和百分比
@@ -62,5 +63,11 @@ public class PieData {
         this.percentage = percentage;
     }
 
+    public double getCurrentStartAngle() {
+        return currentStartAngle;
+    }
 
+    public void setCurrentStartAngle(double currentStartAngle) {
+        this.currentStartAngle = currentStartAngle;
+    }
 }
