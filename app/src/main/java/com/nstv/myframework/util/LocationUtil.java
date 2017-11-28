@@ -111,10 +111,7 @@ public class LocationUtil {
                 mOnlocateListener.locatComplete(resultCode, sb.toString());
         }
 
-        @Override
-        public void onConnectHotSpotMessage(String s, int i) {
 
-        }
     }
 
     public interface OnLocateListener {
