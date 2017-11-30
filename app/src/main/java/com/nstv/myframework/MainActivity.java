@@ -6,7 +6,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.nstv.myframework.animator.AnimatorHomeActivity;
-import com.nstv.myframework.customview.PieChartActivity;
+import com.nstv.myframework.customview.curve.BezierActivity;
+import com.nstv.myframework.customview.piechart.PieChartActivity;
 import com.nstv.myframework.mtldesign.ScrollingActivity;
 import com.nstv.myframework.mtldesign.PageColorGradualActivity;
 import com.nstv.myframework.test.event.TouchEventActivity;
@@ -43,6 +44,7 @@ public class MainActivity extends BaseActivity {
 		mList.add("ViewPager滑动背景色渐变");
 		mList.add("事件分发");
 		mList.add("饼状图");
+		mList.add("贝塞尔二阶曲线");
 		mAdapter = new MainAdapter(this, mList);
 		mListView.setAdapter(mAdapter);
 
@@ -75,6 +77,9 @@ public class MainActivity extends BaseActivity {
 						break;
 					case 5:
 						openActivity(PieChartActivity.class);
+						break;
+					case 6:
+						openActivity(BezierActivity.class);
 						break;
 					default:
 						break;

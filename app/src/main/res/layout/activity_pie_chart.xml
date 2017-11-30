@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nstv.myframework.customview.PieChartActivity">
+    tools:context="com.nstv.myframework.customview.piechart.PieChartActivity">
 
-    <com.nstv.myframework.customview.PieView
+    <com.nstv.myframework.customview.piechart.PieView
         android:id="@+id/pieview"
         android:layout_width="240dp"
         android:layout_height="240dp"

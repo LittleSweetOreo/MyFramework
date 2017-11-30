@@ -1,4 +1,4 @@
-package com.nstv.myframework.customview;
+package com.nstv.myframework.customview.piechart;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.nstv.myframework.R;
+import com.nstv.myframework.customview.piechart.PieData;
+import com.nstv.myframework.customview.piechart.PieStartAngleIllegalException;
 import com.nstv.myframework.util.Logger;
 
 import java.util.List;

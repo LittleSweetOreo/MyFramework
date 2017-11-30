@@ -1,4 +1,4 @@
-package com.nstv.myframework.customview;
+package com.nstv.myframework.customview.piechart;
 
 /**
  * @author liyong

@@ -1,6 +1,5 @@
 package com.nstv.myframework.animator;
 
-import android.os.Bundle;
 import android.view.View;
 
 import com.nstv.myframework.BaseActivity;
@@ -11,12 +10,6 @@ public class AnimatorHomeActivity extends BaseActivity {
 	@Override
 	protected int bindLayout() {
 		return R.layout.activity_animator_home;
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
 	}
 
 	@Override

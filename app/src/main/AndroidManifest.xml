@@ -31,7 +31,9 @@
         </activity>
         <activity android:name=".test.event.TouchEventActivity">
         </activity>
-        <activity android:name=".customview.PieChartActivity">
+        <activity android:name=".customview.piechart.PieChartActivity">
+        </activity>
+        <activity android:name=".customview.curve.BezierActivity">
         </activity>
     </application>
 
