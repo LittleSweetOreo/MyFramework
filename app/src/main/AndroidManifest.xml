@@ -39,6 +39,8 @@
         </activity>
         <activity android:name=".customview.curve.Bezier3Activity">
         </activity>
+        <activity android:name=".customview.path.SearchViewActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import com.nstv.myframework.animator.AnimatorHomeActivity;
 import com.nstv.myframework.customview.curve.Bezier1Activity;
 import com.nstv.myframework.customview.curve.Bezier2Activity;
 import com.nstv.myframework.customview.curve.Bezier3Activity;
+import com.nstv.myframework.customview.path.SearchViewActivity;
 import com.nstv.myframework.customview.piechart.PieChartActivity;
 import com.nstv.myframework.mtldesign.ScrollingActivity;
 import com.nstv.myframework.mtldesign.PageColorGradualActivity;
@@ -49,6 +50,7 @@ public class MainActivity extends BaseActivity {
 		mList.add("贝塞尔二阶曲线");
 		mList.add("贝塞尔三阶曲线");
 		mList.add("贝塞尔心形曲线");
+		mList.add("搜索动画控件");
 		mAdapter = new MainAdapter(this, mList);
 		mListView.setAdapter(mAdapter);
 
@@ -90,6 +92,9 @@ public class MainActivity extends BaseActivity {
 
 					case 8:
 						openActivity(Bezier3Activity.class);
+						break;
+					case 9:
+						openActivity(SearchViewActivity.class);
 						break;
 					default:
 						break;
