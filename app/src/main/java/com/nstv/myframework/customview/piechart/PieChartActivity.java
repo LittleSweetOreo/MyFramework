@@ -21,7 +21,7 @@ public class PieChartActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mPieView = (PieView) getView(R.id.pieview);
+        mPieView = getView(R.id.pieview);
     }
 
     @Override

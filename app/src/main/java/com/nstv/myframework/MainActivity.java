@@ -6,7 +6,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.nstv.myframework.animator.AnimatorHomeActivity;
-import com.nstv.myframework.customview.curve.BezierActivity;
+import com.nstv.myframework.customview.curve.Bezier1Activity;
+import com.nstv.myframework.customview.curve.Bezier2Activity;
+import com.nstv.myframework.customview.curve.Bezier3Activity;
 import com.nstv.myframework.customview.piechart.PieChartActivity;
 import com.nstv.myframework.mtldesign.ScrollingActivity;
 import com.nstv.myframework.mtldesign.PageColorGradualActivity;
@@ -33,7 +35,7 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void initView() {
-		mListView = (ListView) getView(R.id.listview);
+		mListView = getView(R.id.listview);
 	}
 
 	@Override
@@ -45,6 +47,8 @@ public class MainActivity extends BaseActivity {
 		mList.add("事件分发");
 		mList.add("饼状图");
 		mList.add("贝塞尔二阶曲线");
+		mList.add("贝塞尔三阶曲线");
+		mList.add("贝塞尔心形曲线");
 		mAdapter = new MainAdapter(this, mList);
 		mListView.setAdapter(mAdapter);
 
@@ -79,7 +83,13 @@ public class MainActivity extends BaseActivity {
 						openActivity(PieChartActivity.class);
 						break;
 					case 6:
-						openActivity(BezierActivity.class);
+						openActivity(Bezier1Activity.class);
+						break;
+					case 7:
+						openActivity(Bezier2Activity.class);
+
+					case 8:
+						openActivity(Bezier3Activity.class);
 						break;
 					default:
 						break;

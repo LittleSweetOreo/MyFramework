@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.List;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
 	public static final String BUNDLE = "bundle";
@@ -28,10 +30,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 	}
 
 	protected void setListener() {
+
 	}
 
-	protected View getView(int resId) {
-		return findViewById(resId);
+	protected <T extends View> T getView(int resId) {
+		return (T) findViewById(resId);
 	}
 
 	protected void openActivity(Class activityClz) {

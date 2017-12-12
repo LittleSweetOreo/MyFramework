@@ -33,7 +33,11 @@
         </activity>
         <activity android:name=".customview.piechart.PieChartActivity">
         </activity>
-        <activity android:name=".customview.curve.BezierActivity">
+        <activity android:name=".customview.curve.Bezier1Activity">
+        </activity>
+        <activity android:name=".customview.curve.Bezier2Activity">
+        </activity>
+        <activity android:name=".customview.curve.Bezier3Activity">
         </activity>
     </application>
 

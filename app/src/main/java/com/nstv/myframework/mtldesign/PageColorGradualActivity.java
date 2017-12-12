@@ -40,7 +40,7 @@ public class PageColorGradualActivity extends BaseActivity {
 
 	@Override
 	protected void initView() {
-		mViewPager = (ViewPager) getView(R.id.viewpager);
+		mViewPager = getView(R.id.viewpager);
 	}
 
 	@Override

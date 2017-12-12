@@ -55,15 +55,15 @@ public class ScrollingActivity extends BaseActivity {
 
 	@Override
 	protected void initView() {
-		Toolbar toolbar = (Toolbar) getView(R.id.toolbar);
+		Toolbar toolbar = getView(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		mCollapsingToolbarLayout = (CollapsingToolbarLayout) getView(R.id.toolbar_layout);
+		mCollapsingToolbarLayout =  getView(R.id.toolbar_layout);
 		mCollapsingToolbarLayout.setTitle(" ");
 		mCollapsingToolbarLayout.setTitleEnabled(true);
 
-		mTableLayout = (TabLayout) getView(R.id.tablayout);
-		mViewPager = (ViewPager) getView(R.id.viewpager);
+		mTableLayout = getView(R.id.tablayout);
+		mViewPager = getView(R.id.viewpager);
 
 	}
 
@@ -88,7 +88,7 @@ public class ScrollingActivity extends BaseActivity {
 
 	@Override
 	protected void setListener() {
-		AppBarLayout appBarLayout = (AppBarLayout) getView(R.id.app_bar);
+		AppBarLayout appBarLayout = getView(R.id.app_bar);
 		appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
 			@Override
 			public void onStateChanged(AppBarLayout appBarLayout, State state) {
